@@ -1,3 +1,5 @@
+package poo;
+
 public class Reserva {
     private String nome;      // hóspede
     private String quarto;    // manter como String para simplicidade
