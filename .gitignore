@@ -1,6 +1,6 @@
 /.vscode
-/src/Admin.java
-/src/Cliente.java
-/src/TipoUtilizador.java
-/src/Utilizador.java
+/src/poo/Admin.java
+/src/poo/Cliente.java
+/src/poo/TipoUtilizador.java
+/src/poo/Utilizador.java
 /src/python/
