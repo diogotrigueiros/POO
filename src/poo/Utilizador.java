@@ -12,5 +12,5 @@ public abstract class Utilizador {
     public String getNome() { return nome; }
     public TipoUtilizador getTipo() { return tipo; }
 
-    public abstract void mostrarMenu(Hotel hotel);
+    public abstract void mostrarMenu(Hotel hotel);
 }

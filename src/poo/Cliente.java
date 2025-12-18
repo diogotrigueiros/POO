@@ -26,6 +26,6 @@ public class Cliente extends Utilizador {
                 case "0": return;
                 default: System.out.println("Opção inválida.");
             }
-        }
-    }
+        }
+    }
 }
