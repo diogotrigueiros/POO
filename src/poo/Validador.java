@@ -46,4 +46,15 @@ public class Validador {
             return null; // data inválida
         }
     }
+
+    // Número de hóspedes: inteiro >=1 e plausível (até 100)
+    public static boolean numHospedesValido(String s) {
+        if (s == null || s.isBlank()) return false;
+        try {
+            int n = Integer.parseInt(s.trim());
+            return n >= 1 && n <= 100;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

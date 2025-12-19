@@ -7,10 +7,16 @@ public class Hotel {
 
     private final ArrayList<Reserva> reservas;
     private final Map<String, Reserva> indexPorId = new HashMap<>();
+    private final Map<String, Cliente> clientes = new HashMap<>(); // chave: hashedNif
     private final Scanner scanner = new Scanner(System.in);
 
     public Hotel() {
-        reservas = BaseDeDados.carregar();
+        reservas = BaseDeDados.carregarReservas();
+
+        // carregar clientes
+        for (Cliente c : BaseDeDados.carregarClientes()) {
+            if (c.getHashedNif() != null) clientes.put(c.getHashedNif(), c);
+        }
 
         // criar IDs se faltarem (caso venham de JSON antigo)
         for (Reserva r : reservas) {
@@ -24,7 +30,8 @@ public class Hotel {
     }
 
     private void guardar() {
-        BaseDeDados.guardar(reservas);
+        BaseDeDados.guardarReservas(reservas);
+        BaseDeDados.guardarClientes(new ArrayList<>(clientes.values()));
     }
 
     // ======== Adiciona reservas mantendo o índice ========
@@ -132,13 +139,15 @@ public class Hotel {
 
         String finalDono = dono;
 
+        // Mostrar apenas reservas ativas (não pagas) no menu do cliente
         var minhas = reservas.stream()
                 .filter(r -> r.getDono() != null &&
-                             r.getDono().equalsIgnoreCase(finalDono))
+                             r.getDono().equalsIgnoreCase(finalDono) &&
+                             !r.isPago())
                 .collect(Collectors.toList());
 
         if (minhas.isEmpty()) {
-            System.out.println("Não tens reservas.\n");
+            System.out.println("Não tens reservas ativas.\n");
             return;
         }
 
@@ -252,6 +261,69 @@ public class Hotel {
         System.out.println("Reserva removida!\n");
     }
 
+    // ======== Clientes ========
+    public void registarCliente() {
+        System.out.print("Nome do cliente: ");
+        String nome = scanner.nextLine();
+        if (!Validador.nomeValido(nome)) { System.out.println("Nome inválido.\n"); return; }
+
+        System.out.print("NIF (somente números): ");
+        String nif = scanner.nextLine();
+        if (nif == null || nif.replaceAll("\\D", "").length() < 8) { System.out.println("NIF inválido.\n"); return; }
+
+        if (registarCliente(nome, nif)) {
+            System.out.println("Cliente registado!\n");
+        } else {
+            System.out.println("Falha no registo (NIF inválido ou já registado).\n");
+        }
+    }
+
+    public boolean registarCliente(String nome, String nif) {
+        if (!Validador.nomeValido(nome)) return false;
+        if (nif == null || nif.replaceAll("\\D", "").length() < 8) return false;
+        Cliente c = new Cliente(nome, nif);
+        if (clientes.containsKey(c.getHashedNif())) return false;
+        clientes.put(c.getHashedNif(), c);
+        guardar();
+        return true;
+    }
+
+    public Cliente getClienteByHashedNif(String hashed) {
+        return clientes.get(hashed);
+    }
+
+    public void pagarReservaDoCliente(String nome) {
+        String finalNome = nome;
+        var minhas = reservas.stream()
+                .filter(r -> r.getDono() != null && r.getDono().equalsIgnoreCase(finalNome))
+                .collect(java.util.stream.Collectors.toList());
+
+        if (minhas.isEmpty()) {
+            System.out.println("Não tens reservas.\n");
+            return;
+        }
+
+        System.out.println("===== AS MINHAS RESERVAS =====");
+        for (int i = 0; i < minhas.size(); i++) {
+            System.out.println(i + " - " + minhas.get(i));
+        }
+
+        System.out.print("Escolhe o ID (posição na lista) para pagar ou 'c' para cancelar: ");
+        String in = scanner.nextLine();
+        if (in.equalsIgnoreCase("c")) { System.out.println(); return; }
+
+        try {
+            int idx = Integer.parseInt(in);
+            if (idx < 0 || idx >= minhas.size()) { System.out.println("ID inválido.\n"); return; }
+            Reserva r = minhas.get(idx);
+            r.setPago(true);
+            guardar();
+            System.out.println("Reserva paga!\n");
+        } catch (Exception e) {
+            System.out.println("Entrada inválida.\n");
+        }
+    }
+
     // ======== FILTROS ========
     public void verPorNumeroDeQuarto() {
         System.out.print("Número do quarto: ");
@@ -304,18 +376,31 @@ public class Hotel {
         imprimirLista("RESERVAS POR DATA", ord);
     }
 
-    public void verOrdenadoPorQuarto() {
-        List<Reserva> ord = new ArrayList<>(reservas);
-        ord.sort(Comparator.comparing(Reserva::getQuarto)
-                .thenComparing(Reserva::getData));
-        imprimirLista("RESERVAS POR QUARTO", ord);
-    }
-
     public void verOrdenadoPorNome() {
         List<Reserva> ord = new ArrayList<>(reservas);
         ord.sort(Comparator.comparing(Reserva::getNome, String.CASE_INSENSITIVE_ORDER));
         imprimirLista("RESERVAS POR NOME", ord);
     }
+
+    public void verOrdenadoPorQuartoNumerico() {
+        List<Reserva> ord = new ArrayList<>(reservas);
+        ord.sort(ReservaComparators.byRoomNumberNumeric());
+        imprimirLista("RESERVAS POR NÚMERO DE QUARTO (numérico)", ord);
+    }
+
+    public void verOrdenadoPorNumHospedes() {
+        List<Reserva> ord = new ArrayList<>(reservas);
+        ord.sort(ReservaComparators.byNumGuests());
+        imprimirLista("RESERVAS POR Nº HÓSPEDES", ord);
+    }
+
+    public void verOrdenadoPorPago() {
+        List<Reserva> ord = new ArrayList<>(reservas);
+        ord.sort(ReservaComparators.byPaidStatus());
+        imprimirLista("RESERVAS POR ESTADO DE PAGAMENTO", ord);
+    }
+
+
 
     private void imprimirLista(String titulo, List<Reserva> lista) {
         System.out.println("===== " + titulo + " =====");

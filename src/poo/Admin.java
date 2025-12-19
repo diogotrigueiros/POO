@@ -17,8 +17,8 @@ public class Admin extends Utilizador {
             System.out.println("2 - Ver reservas");
             System.out.println("3 - Editar reserva");
             System.out.println("4 - Excluir reserva");
-            System.out.println("5 - Ver por quarto");
-            System.out.println("6 - Ver por data");
+            System.out.println("5 - Filtrar por nº de quarto");
+            System.out.println("6 - Filtrar por data");
             System.out.println("0 - Voltar");
 
             System.out.print("Opção: ");
