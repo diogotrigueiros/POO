@@ -5,8 +5,35 @@
     "tipo": "CLIENTE"
   },
   {
+    "id": "bbce5a8e-15bc-4125-a5fc-04cb40f15511",
+    "nome": "ttt",
+    "tipo": "CLIENTE"
+  },
+  {
+    "id": "906a531a-d2d3-45ce-ab60-2de2873b9458",
+    "hashedNif": "8a9bcf1e51e812d0af8465a8dbcc9f741064bf0af3b3d08e6b0246437c19f7fb",
+    "nome": "rrr",
+    "tipo": "CLIENTE"
+  },
+  {
+    "id": "5114041e-7981-47c7-8ec3-bb6a7d93ed00",
+    "nome": "aaa",
+    "tipo": "CLIENTE"
+  },
+  {
     "hashedNif": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225",
     "nome": "tu",
+    "tipo": "CLIENTE"
+  },
+  {
+    "id": "690031e4-d42b-42f9-8cb4-57623d13cd45",
+    "hashedNif": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "nome": "dupTest",
+    "tipo": "CLIENTE"
+  },
+  {
+    "id": "780972c7-94fd-4126-a380-6d421371a678",
+    "nome": "noNifUser",
     "tipo": "CLIENTE"
   }
 ]

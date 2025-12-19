@@ -3,6 +3,7 @@ package poo;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
+import java.util.Objects;
 
 public class Reserva implements Comparable<Reserva> {
     private String id;
@@ -73,5 +74,24 @@ public class Reserva implements Comparable<Reserva> {
         int cmp = this.quarto.compareTo(o.quarto);
         if (cmp != 0) return cmp;
         return this.nome.compareToIgnoreCase(o.nome);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reserva)) return false;
+        Reserva r = (Reserva) o;
+        if (this.id != null && r.id != null) {
+            return this.id.equals(r.id);
+        }
+        return Objects.equals(this.nome, r.nome) &&
+               Objects.equals(this.quarto, r.quarto) &&
+               Objects.equals(this.data, r.data);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) return Objects.hash(id);
+        return Objects.hash(nome, quarto, data);
     }
 }

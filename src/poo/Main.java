@@ -30,6 +30,8 @@ public class Main {
                     System.out.println("10 - Ordenar por nº hóspedes");
                     System.out.println("11 - Ordenar por estado de pagamento");
                     System.out.println("12 - Terminar sessão");
+                    System.out.println("13 - Listar clientes");
+                    System.out.println("14 - Remover reservas duplicadas");
                     System.out.println("Opção: ");
                     String op = sc.nextLine();
                     System.out.println();
@@ -71,6 +73,12 @@ public class Main {
                         case "12":
                             System.out.println("Sessão encerrada \n");
                             break;
+                        case "13":
+                            hotel.verClientes();
+                            break;
+                        case "14":
+                            hotel.removerReservasDuplicadas();
+                            break;
                         default:
                             System.out.println("Opção inválida \n");
                     }
@@ -84,14 +92,27 @@ public class Main {
                 if (reg.equalsIgnoreCase("s")) {
                     System.out.print("NIF: ");
                     String nif = sc.nextLine().trim();
-                    if (nif.isBlank()) { System.out.println("NIF inválido\n"); continue; }
-                    String hashed = null;
-                    try { java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
-                          hashed = java.util.HexFormat.of().formatHex(md.digest(nif.getBytes("UTF-8"))); }
-                    catch (Exception e) { System.out.println("Erro a processar NIF.\n"); continue; }
-                    var c = hotel.getClienteByHashedNif(hashed);
-                    if (c == null) { System.out.println("Cliente não encontrado.\n"); continue; }
-                    cliente = c.getNome();
+                    Cliente c = null;
+                    if (!nif.isBlank()) {
+                        String hashed = null;
+                        try { java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+                              hashed = java.util.HexFormat.of().formatHex(md.digest(nif.getBytes("UTF-8"))); }
+                        catch (Exception e) { System.out.println("Erro a processar NIF.\n"); continue; }
+                        c = hotel.getClienteByHashedNif(hashed);
+                    }
+
+                    if (c == null) {
+                        // fallback: pedir directamente o nome para autenticação por nome
+                        System.out.println("NIF não encontrado ou não fornecido. Autenticar por nome.");
+                        System.out.print("Nome: ");
+                        String nomeLogin = sc.nextLine().trim();
+                        if (nomeLogin.isBlank()) { System.out.println("Nome inválido.\n"); continue; }
+                        c = hotel.getClienteByNome(nomeLogin);
+                        if (c == null) { System.out.println("Cliente não encontrado por nome.\n"); continue; }
+                        cliente = c.getNome();
+                    } else {
+                        cliente = c.getNome();
+                    }
                 } else {
                     System.out.println("O teu nome: ");
                     cliente = sc.nextLine().trim();
@@ -105,6 +126,17 @@ public class Main {
                             System.out.println("Registo efetuado. Agora podes autenticar com o teu NIF no próximo login.\n");
                         } else {
                             System.out.println("Registo falhou (NIF inválido ou já registado).\n");
+                            // Não avançar para sessão de cliente se falhar o registo
+                            continue;
+                        }
+                    } else {
+                        // registar sem NIF
+                        if (hotel.registarClienteSemNif(cliente)) {
+                            System.out.println("Registo efetuado sem NIF.\n");
+                        } else {
+                            System.out.println("Registo falhou (nome inválido ou já registado).\n");
+                            // Não avançar para sessão se o registo sem NIF falhar
+                            continue;
                         }
                     }
                 }

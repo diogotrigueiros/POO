@@ -15,7 +15,13 @@ public class Hotel {
 
         // carregar clientes
         for (Cliente c : BaseDeDados.carregarClientes()) {
-            if (c.getHashedNif() != null) clientes.put(c.getHashedNif(), c);
+            if (c.getHashedNif() != null) {
+                clientes.put(c.getHashedNif(), c);
+            } else {
+                // garantir id e guardar sob id para clientes sem NIF
+                if (c.getId() == null) c.setIdIfNull(java.util.UUID.randomUUID().toString());
+                clientes.put(c.getId(), c);
+            }
         }
 
         // criar IDs se faltarem (caso venham de JSON antigo)
@@ -282,14 +288,35 @@ public class Hotel {
         if (!Validador.nomeValido(nome)) return false;
         if (nif == null || nif.replaceAll("\\D", "").length() < 8) return false;
         Cliente c = new Cliente(nome, nif);
+        c.setIdIfNull(java.util.UUID.randomUUID().toString());
         if (clientes.containsKey(c.getHashedNif())) return false;
         clientes.put(c.getHashedNif(), c);
         guardar();
         return true;
     }
 
+    public boolean registarClienteSemNif(String nome) {
+        if (!Validador.nomeValido(nome)) return false;
+        // evitar duplicados simples por nome para clientes sem NIF
+        for (Cliente existing : clientes.values()) {
+            if (existing.getHashedNif() == null && existing.getNome() != null && existing.getNome().equalsIgnoreCase(nome)) return false;
+        }
+        Cliente c = new Cliente(nome);
+        clientes.put(c.getId(), c);
+        guardar();
+        return true;
+    }
+
     public Cliente getClienteByHashedNif(String hashed) {
         return clientes.get(hashed);
+    }
+
+    public Cliente getClienteByNome(String nome) {
+        if (nome == null) return null;
+        for (Cliente c : clientes.values()) {
+            if (c.getNome() != null && c.getNome().equalsIgnoreCase(nome)) return c;
+        }
+        return null;
     }
 
     public void pagarReservaDoCliente(String nome) {
@@ -322,6 +349,47 @@ public class Hotel {
         } catch (Exception e) {
             System.out.println("Entrada inválida.\n");
         }
+    }
+
+    // ======== ADMIN: clientes / remoção de duplicados ========
+    public void verClientes() {
+        if (clientes.isEmpty()) {
+            System.out.println("Nenhum cliente registado.\n");
+            return;
+        }
+        System.out.println("===== CLIENTES =====");
+        for (Cliente c : clientes.values()) {
+            System.out.println(c);
+        }
+        System.out.println();
+    }
+
+    public void removerReservasDuplicadas() {
+        if (reservas.isEmpty()) {
+            System.out.println("Nenhuma reserva.\n");
+            return;
+        }
+        java.util.Set<Reserva> seen = new java.util.HashSet<>();
+        java.util.List<Reserva> toRemove = new java.util.ArrayList<>();
+        for (Reserva r : reservas) {
+            if (!seen.add(r)) {
+                toRemove.add(r);
+            }
+        }
+        if (toRemove.isEmpty()) {
+            System.out.println("Não foram encontradas reservas duplicadas.\n");
+            return;
+        }
+        for (Reserva r : toRemove) {
+            reservas.remove(r);
+            if (r.getId() != null) {
+                indexPorId.remove(r.getId());
+            } else {
+                indexPorId.values().removeIf(v -> v.equals(r));
+            }
+        }
+        guardar();
+        System.out.println("Removidas " + toRemove.size() + " reservas duplicadas.\n");
     }
 
     // ======== FILTROS ========

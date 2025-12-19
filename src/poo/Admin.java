@@ -19,6 +19,8 @@ public class Admin extends Utilizador {
             System.out.println("4 - Excluir reserva");
             System.out.println("5 - Filtrar por nº de quarto");
             System.out.println("6 - Filtrar por data");
+            System.out.println("7 - Listar clientes");
+            System.out.println("8 - Remover reservas duplicadas");
             System.out.println("0 - Voltar");
 
             System.out.print("Opção: ");
@@ -31,6 +33,8 @@ public class Admin extends Utilizador {
                 case "4": hotel.excluirReservaAdmin(); break;
                 case "5": hotel.verPorNumeroDeQuarto(); break;
                 case "6": hotel.verPorDia(); break;
+                case "7": hotel.verClientes(); break;
+                case "8": hotel.removerReservasDuplicadas(); break;
                 case "0": return;
                 default: System.out.println("Opção inválida.");
             }
