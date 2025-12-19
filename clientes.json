@@ -1,0 +1,12 @@
+[
+  {
+    "hashedNif": "a00ee4e4a8f4d820354f1f31291476101f11ab60c6d8ebd0cdbb18304048ebdc",
+    "nome": "eu",
+    "tipo": "CLIENTE"
+  },
+  {
+    "hashedNif": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225",
+    "nome": "tu",
+    "tipo": "CLIENTE"
+  }
+]
