@@ -101,10 +101,10 @@ public class Hotel {
             return;
         }
 
-        System.out.print("Contato: ");
+        System.out.print("Contacto: ");
         String contato = scanner.nextLine();
         if (!Validador.contatoValido(contato)) {
-            System.out.println("Contato inválido.\n");
+            System.out.println("Contacto inválido.\n");
             return;
         }
 
@@ -193,7 +193,7 @@ public class Hotel {
         String nome = scanner.nextLine();
         if (!nome.isBlank()) {
             if (!Validador.nomeValido(nome)) {
-                System.out.println("Invalid name.\n");
+                System.out.println("Nome inválido.\n");
                 return;
             }
             r.setNome(nome);
@@ -213,11 +213,11 @@ public class Hotel {
             r.setQuarto(quarto);
         }
 
-        System.out.print("Contato (" + r.getContato() + "): ");
+        System.out.print("Contacto (" + r.getContato() + "): ");
         String contato = scanner.nextLine();
         if (!contato.isBlank()) {
             if (!Validador.contatoValido(contato)) {
-                System.out.println("Contato inválido.\n");
+                System.out.println("Contacto inválido.\n");
                 return;
             }
             r.setContato(contato);

@@ -55,7 +55,7 @@ public class Reserva implements Comparable<Reserva> {
     public String toString() {
         return "Nome: " + nome +
                 " | Quarto: " + quarto +
-                " | Contato: " + contato +
+                " | Contacto: " + contato +
                 " | Data: " + data +
                 " | Hóspedes: " + numHospedes +
                 " | Pago: " + (pago ? "sim" : "não");
