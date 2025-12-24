@@ -107,6 +107,19 @@ public class Hotel {
             System.out.println("Contacto inválido.\n");
             return;
         }
+        if (contatoDuplicado(contato, null)) {
+            System.out.println("Contacto já está associado a outra reserva.\n");
+            return;
+        }
+
+        // Número de hóspedes
+        System.out.print("Número de hóspedes: ");
+        String numHospedesStr = scanner.nextLine();
+        if (!Validador.numHospedesValido(numHospedesStr)) {
+            System.out.println("Número de hóspedes inválido.\n");
+            return;
+        }
+        int numHospedes = Integer.parseInt(numHospedesStr.trim());
 
         System.out.print("Data (DD/MM/AAAA): ");
         String data = scanner.nextLine();
@@ -123,10 +136,22 @@ public class Hotel {
 
         String dono = (donoFixo == null ? nome : donoFixo);
 
-        Reserva nova = new Reserva(nome, quarto, contato, data, dono);
+        Reserva nova = new Reserva(nome, quarto, contato, data, dono, numHospedes);
 
         adicionarReserva(nova);
         System.out.println("Reserva criada!\n");
+    }
+
+    private boolean contatoDuplicado(String contato, Integer ignorarIndex) {
+        String n = Validador.normalizarContato(contato);
+        if (n == null || n.isBlank()) return false;
+        for (int i = 0; i < reservas.size(); i++) {
+            if (ignorarIndex != null && ignorarIndex == i) continue;
+            Reserva r = reservas.get(i);
+            String rn = Validador.normalizarContato(r.getContato());
+            if (n.equals(rn)) return true;
+        }
+        return false;
     }
 
     private boolean quartoDisponivel(String quarto, String data, Integer ignorarIndex) {
@@ -220,6 +245,10 @@ public class Hotel {
                 System.out.println("Contacto inválido.\n");
                 return;
             }
+            if (contatoDuplicado(contato, id)) {
+                System.out.println("Contacto já está associado a outra reserva.\n");
+                return;
+            }
             r.setContato(contato);
         }
 
@@ -236,6 +265,16 @@ public class Hotel {
                 return;
             }
             r.setData(novaData);
+        }
+
+        System.out.print("Nº Hóspedes (" + r.getNumHospedes() + "): ");
+        String numStr = scanner.nextLine();
+        if (!numStr.isBlank()) {
+            if (!Validador.numHospedesValido(numStr)) {
+                System.out.println("Número de hóspedes inválido.\n");
+                return;
+            }
+            r.setNumHospedes(Integer.parseInt(numStr.trim()));
         }
 
         guardar();

@@ -29,12 +29,18 @@ public class Validador {
     }
 
     // Contacto com pelo menos 9 dígitos numéricos
-    public static boolean contatoValido(String contato) {
-        if (contato == null) return false;
+    public static boolean contatoValido(String contacto) {
+        if (contacto == null) return false;
 
         // remove tudo que não é dígito (espaços, +351, etc)
-        String clean = contato.replaceAll("\\D", "");
+        String clean = contacto.replaceAll("\\D", "");
         return clean.length() >= 9;
+    }
+
+    // Normaliza um contacto removendo caracteres não numéricos (útil para comparações)
+    public static String normalizarContato(String contacto) {
+        if (contacto == null) return "";
+        return contacto.replaceAll("\\D", "");
     }
 
     // Valida a data e devolve a data formatada ou null se for inválida

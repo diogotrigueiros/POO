@@ -21,7 +21,7 @@ public class Admin extends Utilizador {
             System.out.println("6 - Filtrar por data");
             System.out.println("7 - Listar clientes");
             System.out.println("8 - Remover reservas duplicadas");
-            System.out.println("0 - Voltar");
+            System.out.println("0 - Terminar sessão");
 
             System.out.print("Opção: ");
             String op = scanner.nextLine();
