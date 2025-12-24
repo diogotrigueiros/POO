@@ -53,7 +53,8 @@ public class Reserva implements Comparable<Reserva> {
 
     @Override
     public String toString() {
-        return "Nome: " + nome +
+        return "ID: " + (id != null ? id : "(sem id)") +
+                " | Nome: " + nome +
                 " | Quarto: " + quarto +
                 " | Contacto: " + contato +
                 " | Data: " + data +

@@ -42,6 +42,10 @@ public class Hotel {
 
     // ======== Adiciona reservas mantendo o índice ========
     private void adicionarReserva(Reserva r) {
+        // Garantir que a reserva tem um ID antes de inserir no índice
+        if (r.getId() == null) {
+            r.setIdIfNull(java.util.UUID.randomUUID().toString());
+        }
         reservas.add(r);
         indexPorId.put(r.getId(), r);
         guardar();
