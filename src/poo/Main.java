@@ -29,9 +29,9 @@ public class Main {
                     System.out.println("9 - Ordenar por nome");
                     System.out.println("10 - Ordenar por nº hóspedes");
                     System.out.println("11 - Ordenar por estado de pagamento");
-                    System.out.println("12 - Terminar sessão");
+                    System.out.println("12 - Remover reservas duplicadas");
                     System.out.println("13 - Listar clientes");
-                    System.out.println("14 - Remover reservas duplicadas");
+                    System.out.println("14 - Terminar sessão");
                     System.out.println("Opção: ");
                     String op = sc.nextLine();
                     System.out.println();
@@ -71,18 +71,18 @@ public class Main {
                             hotel.verOrdenadoPorPago();
                             break;
                         case "12":
-                            System.out.println("Sessão encerrada \n");
+                            hotel.removerReservasDuplicadas();
                             break;
                         case "13":
                             hotel.verClientes();
                             break;
                         case "14":
-                            hotel.removerReservasDuplicadas();
+                            System.out.println("Sessão encerrada \n");
                             break;
                         default:
                             System.out.println("Opção inválida \n");
                     }
-                    if (op.equals("12"))
+                    if (op.equals("14"))
                         break;
                 }
             } else if (perfil.equals("2")) {
