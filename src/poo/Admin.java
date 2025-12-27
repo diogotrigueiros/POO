@@ -1,6 +1,10 @@
 package poo;
 import java.util.Scanner;
 
+/*
+ Utilizador com privilégios de administração. Fornece um menu com
+ operações de gestão global de reservas e clientes.
+ */
 public class Admin extends Utilizador {
 
     public Admin(String nome) {
