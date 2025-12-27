@@ -3,6 +3,11 @@ package poo;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ Classe principal que representa a lógica do hotel: gestão de reservas e clientes.
+ Mantém uma lista de reservas, um índice por id para acesso rápido e um mapa de clientes
+ chaveado por `hashedNif` ou `id` quando não existe NIF.
+ */
 public class Hotel {
 
     private final ArrayList<Reserva> reservas;
@@ -11,6 +16,7 @@ public class Hotel {
     private final Scanner scanner = new Scanner(System.in);
 
     public Hotel() {
+        // Carrega reservas e clientes da persistência e garante ids para compatibilidade
         reservas = BaseDeDados.carregarReservas();
 
         // carregar clientes
@@ -35,6 +41,7 @@ public class Hotel {
         guardar();
     }
 
+    // Persiste estado atual de reservas e clientes no disco
     private void guardar() {
         BaseDeDados.guardarReservas(reservas);
         BaseDeDados.guardarClientes(new ArrayList<>(clientes.values()));
@@ -53,6 +60,7 @@ public class Hotel {
 
     // ======== Remover reservas mantendo o índice ========
     private void removerReservaPorIndice(int i) {
+        // Remove da lista e do índice, e persiste alterações
         Reserva r = reservas.remove(i);
         if (r != null) {
             indexPorId.remove(r.getId());
@@ -85,6 +93,8 @@ public class Hotel {
     }
 
     private void criarReserva(String donoFixo, boolean isAdmin) {
+        // O parâmetro donoFixo permite ao método ser usado tanto pelo Admin (indefinido) quanto
+        // pelo Cliente (nome fixo). Valida todos os campos e verifica disponibilidade.
 
         String nome;
         if (isAdmin) {
@@ -146,6 +156,10 @@ public class Hotel {
         System.out.println("Reserva criada!\n");
     }
 
+    /**
+     Verifica se um contacto já existe noutra reserva (útil para evitar duplicação por erro do utilizador).
+     `ignorarIndex` permite omitir uma posição (útil durante edição de uma reserva).
+     */
     private boolean contatoDuplicado(String contato, Integer ignorarIndex) {
         String n = Validador.normalizarContato(contato);
         if (n == null || n.isBlank()) return false;
@@ -158,6 +172,10 @@ public class Hotel {
         return false;
     }
 
+    /*
+     Verifica se o quarto está disponível numa data específica.
+     `ignorarIndex` permite omitir uma reserva (útil durante edição para não comparar com ela própria).
+     */
     private boolean quartoDisponivel(String quarto, String data, Integer ignorarIndex) {
         for (int i = 0; i < reservas.size(); i++) {
             if (ignorarIndex != null && ignorarIndex == i) continue;
@@ -327,6 +345,9 @@ public class Hotel {
         }
     }
 
+
+    // Regista um cliente com NIF (valida nome e NIF). O NIF é armazenado como hash.
+
     public boolean registarCliente(String nome, String nif) {
         if (!Validador.nomeValido(nome)) return false;
         if (nif == null || nif.replaceAll("\\D", "").length() < 8) return false;
@@ -338,9 +359,11 @@ public class Hotel {
         return true;
     }
 
+
+    // Regista um cliente sem NIF. Evita duplicados simples por nome.
+
     public boolean registarClienteSemNif(String nome) {
         if (!Validador.nomeValido(nome)) return false;
-        // evitar duplicados simples por nome para clientes sem NIF
         for (Cliente existing : clientes.values()) {
             if (existing.getHashedNif() == null && existing.getNome() != null && existing.getNome().equalsIgnoreCase(nome)) return false;
         }
@@ -406,6 +429,9 @@ public class Hotel {
         }
         System.out.println();
     }
+
+
+    // Remove reservas duplicadas usando equality definido em Reserva (id ou nome/quarto/data).
 
     public void removerReservasDuplicadas() {
         if (reservas.isEmpty()) {

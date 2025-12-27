@@ -5,6 +5,11 @@ import java.util.HexFormat;
 import java.util.Objects;
 import java.util.UUID;
 
+/*
+ Representa um cliente registado no sistema.
+ O NIF nunca é guardado em claro: é armazenado o seu hash (SHA-256) para privacidade.
+ Cada cliente pode também ter um `id` gerado para identificação quando não existe NIF.
+ */
 public class Cliente extends Utilizador {
 
     private String id;
@@ -62,6 +67,9 @@ public class Cliente extends Utilizador {
         }
     }
 
+
+    // Calcula o hash SHA-256 do NIF. Usado para não armazenar NIF em claro.
+
     private static String hashNif(String nif) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -90,6 +98,7 @@ public class Cliente extends Utilizador {
         if (this == o) return true;
         if (!(o instanceof Cliente)) return false;
         Cliente c = (Cliente) o;
+        // Comparação por hashedNif preferencialmente; caso não exista, usa id; por fim, usa nome
         if (this.hashedNif != null && c.hashedNif != null) {
             return this.hashedNif.equals(c.hashedNif);
         }
