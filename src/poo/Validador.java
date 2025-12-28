@@ -4,6 +4,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 
+/**
+ Coleção de métodos utilitários para validação e normalização
+ de dados fornecidos pelo utilizador (nome, quarto, contacto, data, etc).
+ Centraliza as regras e facilita testes e manutenção.
+ */
 public class Validador {
 
     // formato seguro: DD/MM/AAAA
@@ -11,12 +16,15 @@ public class Validador {
             DateTimeFormatter.ofPattern("dd/MM/uuuu")
                     .withResolverStyle(ResolverStyle.STRICT);
 
-    // Nome com pelo menos 2 caracteres
+    // Verifica se um nome é considerado válido (>= 2 caracteres)
     public static boolean nomeValido(String nome) {
         return nome != null && nome.trim().length() >= 2;
     }
 
-    // Quarto: apenas números entre 1 e 9999
+    /*
+     Verifica se o número do quarto é válido.
+     Aceita apenas inteiros entre 1 e 9999 (mantém a simplicidade).
+     */
     public static boolean quartoValido(String quarto) {
         if (quarto == null || quarto.trim().isEmpty()) return false;
 
@@ -28,7 +36,10 @@ public class Validador {
         }
     }
 
-    // Contacto com pelo menos 9 dígitos numéricos
+    /*
+     Valida se o contacto contém pelo menos 9 dígitos (após remover caracteres não numéricos).
+     Permite formatos com espaços, prefixos ou símbolos como +351.
+     */
     public static boolean contatoValido(String contacto) {
         if (contacto == null) return false;
 
@@ -37,13 +48,18 @@ public class Validador {
         return clean.length() >= 9;
     }
 
-    // Normaliza um contacto removendo caracteres não numéricos (útil para comparações)
+    /*
+     Normaliza um contacto removendo caracteres não numéricos (útil para comparações).
+     */
     public static String normalizarContato(String contacto) {
         if (contacto == null) return "";
         return contacto.replaceAll("\\D", "");
     }
 
-    // Valida a data e devolve a data formatada ou null se for inválida
+    /*
+     Tenta validar e formatar a data no padrão DD/MM/AAAA.
+     Devolve a data formatada se válida, ou null caso inválida.
+     */
     public static String validarEFormatarData(String data) {
         try {
             LocalDate d = LocalDate.parse(data, FMT);
@@ -53,7 +69,9 @@ public class Validador {
         }
     }
 
-    // Número de hóspedes: inteiro >=1 e plausível (até 100)
+    /*
+     Verifica se o número de hóspedes é um inteiro válido entre 1 e 100.
+     */
     public static boolean numHospedesValido(String s) {
         if (s == null || s.isBlank()) return false;
         try {

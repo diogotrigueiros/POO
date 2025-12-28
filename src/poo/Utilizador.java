@@ -1,4 +1,10 @@
 package poo;
+
+/*
+ Classe base para utilizadores do sistema (Admin ou Cliente).
+ Contém o nome e o tipo do utilizador, assim como o contrato para
+ o método `mostrarMenu` que cada subtipo deve implementar.
+ */
 public abstract class Utilizador {
 
     protected String nome;
