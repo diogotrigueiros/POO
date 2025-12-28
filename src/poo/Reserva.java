@@ -5,6 +5,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.Objects;
 
+/**
+ Representa uma reserva do hotel.
+ Implementa Comparable para ordenação por data, com fallback para comparação por quarto e nome
+ caso a data não possa ser parseada. Contém informação essencial: id, hóspede, quarto, contacto,
+ data, dono (quem efetuou a reserva), número de hóspedes e estado de pagamento.
+ */
 public class Reserva implements Comparable<Reserva> {
     private String id;
     private String nome;      // hóspede
@@ -64,6 +70,7 @@ public class Reserva implements Comparable<Reserva> {
 
     @Override
     public int compareTo(Reserva o) {
+        // Tenta ordenar por data (parsing estrito). Se falhar, faz fallback para ordenar por quarto e nome.
         try {
             LocalDate d1 = LocalDate.parse(this.data, FMT);
             LocalDate d2 = LocalDate.parse(o.data, FMT);
@@ -82,6 +89,7 @@ public class Reserva implements Comparable<Reserva> {
         if (this == o) return true;
         if (!(o instanceof Reserva)) return false;
         Reserva r = (Reserva) o;
+        // Se existir id, usa-o como identificador único; caso contrário, usa nome/quarto/data
         if (this.id != null && r.id != null) {
             return this.id.equals(r.id);
         }
@@ -89,6 +97,7 @@ public class Reserva implements Comparable<Reserva> {
                Objects.equals(this.quarto, r.quarto) &&
                Objects.equals(this.data, r.data);
     }
+
 
     @Override
     public int hashCode() {

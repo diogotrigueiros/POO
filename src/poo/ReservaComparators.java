@@ -2,6 +2,9 @@ package poo;
 
 import java.util.Comparator;
 
+/*
+ Colecção de comparadores utilitários para ordenar listas de `Reserva`.
+ */
 public class ReservaComparators {
 
     public static Comparator<Reserva> byRoomNumberNumeric() {
@@ -21,6 +24,7 @@ public class ReservaComparators {
     }
 
     public static Comparator<Reserva> byPaidStatus() {
+        // Pago primeiro (reversed) para listar primeiro as reservas pagas
         return Comparator.comparing(Reserva::isPago).reversed();
     }
 }

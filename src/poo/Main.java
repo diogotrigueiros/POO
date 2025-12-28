@@ -102,7 +102,7 @@ public class Main {
                     }
 
                     if (c == null) {
-                        // fallback: pedir directamente o nome para autenticação por nome
+                        // fallback: pedir diretamente o nome para autenticação por nome
                         System.out.println("NIF não encontrado ou não fornecido. Autenticar por nome.");
                         System.out.print("Nome: ");
                         String nomeLogin = sc.nextLine().trim();
